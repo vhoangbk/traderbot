@@ -3,12 +3,12 @@ import config
 from binance.client import Client
 from binance.enums import *
 
-SOCKET = "wss://stream.binance.com:9443/ws/adausdt@kline_1m"
+SOCKET = "wss://stream.binance.com:9443/ws/cotiusdt@kline_1m"
 
 RSI_PERIOD = 14
 RSI_OVERBOUGHT = 70
 RSI_OVERSOLD = 30
-TRADE_SYMBOL = 'ADAUSDT'
+TRADE_SYMBOL = 'COTIUSDT'
 TRADE_QUANTITY = 10
 
 closes = []
@@ -36,7 +36,7 @@ def on_close(ws):
 
 def on_message(ws, message):
     global closes, in_position
-
+    print("received message!")
     json_message = json.loads(message)
     # pprint.pprint(json_message)
 
