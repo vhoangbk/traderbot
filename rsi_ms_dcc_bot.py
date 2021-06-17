@@ -5,13 +5,13 @@ from binance.enums import *
 import logger
 import telegram
 
-SOCKET = "wss://stream.binance.com:9443/ws/bzrxusdt@kline_1m"
+SOCKET = "wss://stream.binance.com:9443/ws/adausdt@kline_5m"
 
 RSI_PERIOD = 14
 RSI_OVERBOUGHT = 70
 RSI_OVERSOLD = 30
-TRADE_SYMBOL = 'BZRX'
-TRADE_QUANTITY = 200
+TRADE_SYMBOL = 'ADAUSDT'
+TRADE_QUANTITY = 20
 
 # CHAT_ID = "1045854948" # privte
 CHAT_ID = "-553545116" # group
@@ -122,9 +122,9 @@ def on_message(ws, message):
                 if in_position:
                     print("It is oversold, but you already own it, nothing to do.")
                 else:
-                    print("Oversold! ".format(close))
-                    logger.log("Oversold! ".format(close))
-                    send_message("Oversold! ".format(close))
+                    print("Oversold! {}, {}".format(last_rsi, close))
+                    logger.log("Oversold! {}, {}".format(last_rsi, close))
+                    send_message("Oversold! {}, {}".format(last_rsi, close))
                     # put binance buy order logic here
                     if last_morning_star != 0:
                         logger.log("Buy! Buy! Buy! {}".format(close))
@@ -133,6 +133,7 @@ def on_message(ws, message):
                         if order_succeeded:
                             in_position = True
 
-logger.log("Bot start...")         
+logger.log("Bot start...")
+send_message("Bot start...")    
 ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message)
 ws.run_forever()
