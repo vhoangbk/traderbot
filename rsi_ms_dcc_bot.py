@@ -3,14 +3,19 @@ import config
 from binance.client import Client
 from binance.enums import *
 import logger
+import telegram
 
-SOCKET = "wss://stream.binance.com:9443/ws/adausdt@kline_1m"
+SOCKET = "wss://stream.binance.com:9443/ws/bzrxusdt@kline_1m"
 
 RSI_PERIOD = 14
 RSI_OVERBOUGHT = 70
 RSI_OVERSOLD = 30
-TRADE_SYMBOL = 'ADAUSDT'
+TRADE_SYMBOL = 'BZRX'
 TRADE_QUANTITY = 200
+
+# CHAT_ID = "1045854948" # privte
+CHAT_ID = "-553545116" # group
+TOKEN = "1800779983:AAHNfSzhmigrvdmj2iXrU28d01ywOTngkOM"
 
 closes = []
 opens = []
@@ -20,15 +25,22 @@ in_position = False
 
 client = Client(config.API_KEY, config.API_SECRET)
 
+def send_message(message):
+    print("send message to telegram")
+    bot = telegram.Bot(TOKEN)
+    bot.sendMessage(chat_id=CHAT_ID, text=message)
+
 def order(side, quantity, symbol,order_type=ORDER_TYPE_MARKET):
     try:
-        print("sending order")
-        logger.log("Bot order")
+        print("Sending order")
+        logger.log("Sending order")
+        send_message("Sending order")
         order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
         print(order)
     except Exception as e:
         logger.log("an exception occurred - {}".format(e))
         print("an exception occurred - {}".format(e))
+        send_message("an exception occurred - {}".format(e))
         return False
 
     return True
@@ -93,11 +105,13 @@ def on_message(ws, message):
 
             if last_rsi > RSI_OVERBOUGHT:
                 if in_position:
-                    print("Overbought! Sell! Sell! Sell!")
-                    logger.log("Overbought!")
+                    print("Overbought! {}, {}".format(last_rsi, close))
+                    send_message("Overbought! {}, {}".format(last_rsi, close))
+                    logger.log("Overbought! {}, {}".format(last_rsi, close))
                     # put binance sell logic here
                     if last_dcc != 0:
-                        logger.log("Sell! Sell! Sell! close: {}, rsi: {}".format(close, last_rsi))
+                        logger.log("Sell! Sell! Sell! {}".format(close))
+                        send_message("Sell! Sell! Sell! {}".format(close))
                         order_succeeded = order(SIDE_SELL, TRADE_QUANTITY, TRADE_SYMBOL)
                         if order_succeeded:
                             in_position = False
@@ -108,11 +122,13 @@ def on_message(ws, message):
                 if in_position:
                     print("It is oversold, but you already own it, nothing to do.")
                 else:
-                    print("Oversold! Buy! Buy! Buy!")
-                    logger.log("Oversold!")
+                    print("Oversold! ".format(close))
+                    logger.log("Oversold! ".format(close))
+                    send_message("Oversold! ".format(close))
                     # put binance buy order logic here
                     if last_morning_star != 0:
-                        logger.log("Buy! Buy! Buy! close: {}, rsi: {}".format(close, last_rsi))
+                        logger.log("Buy! Buy! Buy! {}".format(close))
+                        send_message("Buy! Buy! Buy! {}".format(close))
                         order_succeeded = order(SIDE_BUY, TRADE_QUANTITY, TRADE_SYMBOL)
                         if order_succeeded:
                             in_position = True
