@@ -26,15 +26,14 @@ in_position = False
 client = Client(config.API_KEY, config.API_SECRET)
 
 def send_message(message):
-    print("send message to telegram")
     bot = telegram.Bot(TOKEN)
     bot.sendMessage(chat_id=CHAT_ID, text=message)
 
 def order(side, quantity, symbol,order_type=ORDER_TYPE_MARKET):
     try:
-        print("Sending order")
-        logger.log("Sending order")
-        send_message("Sending order")
+        print("sending order")
+        logger.log("sending order")
+        send_message("sending order")
         order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
         print(order)
     except Exception as e:
@@ -133,7 +132,7 @@ def on_message(ws, message):
                         if order_succeeded:
                             in_position = True
 
-logger.log("Bot start...")
-send_message("Bot start...")    
+logger.log("Trader Bot started")
+send_message("Trader Bot started")    
 ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message)
 ws.run_forever()
