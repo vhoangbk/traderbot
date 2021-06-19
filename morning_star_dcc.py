@@ -4,7 +4,7 @@ from binance.client import Client
 from binance.enums import *
 import telegram
 
-SOCKET = "wss://stream.binance.com:9443/ws/adausdt@kline_1m"
+SOCKET = "wss://stream.binance.com:9443/ws/adausdt@kline_30m"
 
 RSI_PERIOD = 14
 RSI_OVERBOUGHT = 70
@@ -74,6 +74,7 @@ def on_message(ws, message):
         if last_dcc != 0:
             send_message("Dark cloud cover Sell! Sell! Sell! {}".format(close))
 
-send_message("Morning star and Dark cloud cover bot stared!")
+print("Morning star and Dark cloud cover 30m bot stared!")
+send_message("Morning star and Dark cloud cover 30m bot stared!")
 ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message)
 ws.run_forever()
