@@ -4,7 +4,7 @@ from binance.client import Client
 from binance.enums import *
 import telegram
 
-SOCKET = "wss://stream.binance.com:9443/ws/adausdt@kline_1m"
+SOCKET = "wss://stream.binance.com:9443/ws/adausdt@kline_30m"
 
 RSI_PERIOD = 14
 RSI_OVERBOUGHT = 70
@@ -60,8 +60,9 @@ def on_message(ws, message):
             
             if last_rsi < RSI_OVERSOLD:
                 print("Oversold! Buy! Buy! Buy! {}, {}".format(last_rsi, close))
-                send_message("Oversold! Buy! Buy! Buy!".format(last_rsi, close))
+                send_message("Oversold! Buy! Buy! Buy! {}, {}".format(last_rsi, close))
 
-send_message("RSI bot stared!")   
+print("RSI 30m bot stared!")  
+send_message("RSI 30m bot stared!")   
 ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message)
 ws.run_forever()
