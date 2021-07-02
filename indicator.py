@@ -40,11 +40,24 @@ def on_message(ws, message):
 
     is_candle_closed = candle['x']
     close = candle['c']
+    open = candle['o']
+    low = candle['l']
+    high = candle['h']
 
     if is_candle_closed:
+        print("candle closed at {}".format(close))
         closes.append(float(close))
+        opens.append(float(open))
+        lows.append(float(low))
+        highs.append(float(high))
         print("closes")
         print(closes)
+
+
+        np_closes = numpy.array(closes)
+        np_opens = numpy.array(opens)
+        np_lows = numpy.array(lows)
+        np_highs = numpy.array(highs)
 
         morning_star = talib.CDLMORNINGSTAR(np_opens, np_highs, np_lows, np_closes)
         last_morning_star = morning_star[-1]
